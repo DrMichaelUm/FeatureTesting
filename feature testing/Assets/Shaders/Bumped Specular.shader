@@ -45,7 +45,7 @@ Shader "Blackwood/Final Bumped Specular" {
     }
     
     SubShader {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Base" "RenderPipeline" = "UniversalPipeline" }
         LOD 250
     
         CGPROGRAM
@@ -229,5 +229,5 @@ Shader "Blackwood/Final Bumped Specular" {
         ENDCG
     }
     CustomEditor "BumpedSpecularEditor"
-    FallBack "Mobile/VertexLit"
+    FallBack "Universal Render Pipeline/Lit"
 }
