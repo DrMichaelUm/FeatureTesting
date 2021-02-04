@@ -45,11 +45,11 @@ Shader "Blackwood/Final Bumped Specular" {
     }
     
     SubShader {
-        Tags { "RenderType"="Base" "RenderPipeline" = "UniversalPipeline" }
+        Tags { "RenderType"="Opaque" "RenderPipeline" = "UniversalPipeline" }
         LOD 250
     
         CGPROGRAM
-
+        
         #pragma shader_feature_local _ _NORMAL_ON
         #pragma shader_feature_local _ _SKIN_ON
         #pragma shader_feature_local _ _SKIN_BLEND_ON
@@ -60,7 +60,7 @@ Shader "Blackwood/Final Bumped Specular" {
 		#pragma shader_feature_local _ _AMBIENT_ON
         
         #pragma surface surf MobileBlinnPhong exclude_path:prepass nolightmap noforwardadd halfasview novertexlights
-        
+        #pragma target 2.0
         sampler2D _MainTex;
         float4 _Tint;
 
