@@ -22,7 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Unit_01
   m_Shader: {fileID: 4800000, guid: 4018fae2724815c4a9c61cf354b18549, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _SPECULAR_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -65,7 +65,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 9a343476737fe6f40a4f5d96198edd8f, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0a0e8af2869fa45f78e25460db578482, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -95,7 +95,7 @@ Material:
     m_Floats:
     - _Albedo: 0.44
     - _AlphaClip: 0
-    - _AmbientFactor: 0.6
+    - _AmbientFactor: 0.12
     - _Blend: 0
     - _BlendValue: 0
     - _Brightness: 1
@@ -107,6 +107,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
+    - _Gloss: 0.01
     - _GlossMapScale: 0
     - _Glossiness: 0.5
     - _GlossinessSource: 0
@@ -141,20 +142,26 @@ Material:
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     - _Surface: 0
+    - _ToggleAmbient: 0
+    - _ToggleBaseColor: 0
+    - _ToggleBaseMap: 0
     - _ToggleSkin: 0
+    - _ToggleSpecular: 1
     - _UVSec: 0
     - _UseUIAlphaClip: 0
     - _Wawyness: 4
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _AmbientLight: {r: 0.6012994, g: 0.7830189, b: 0.6012994, a: 1}
+    - _AmbientColor: {r: 0.093085766, g: 0, b: 1, a: 1}
+    - _AmbientLight: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColor: {r: 0.8207547, g: 0.18118544, b: 0.18118544, a: 1}
-    - _Color: {r: 0.13640076, g: 0.6569356, b: 0.745283, a: 0.59607846}
+    - _Color: {r: 1, g: 0.21176472, b: 0, a: 1}
     - _ColorizationColor: {r: 1, g: 1, b: 1, a: 1}
     - _DiffuseLight: {r: 0.96695346, g: 1, b: 0.2396226, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _LightningDirection: {r: 0.66, g: 0.66, b: 0.61, a: 0}
+    - _LightColor: {r: 0.29999998, g: 0.6, b: 0.6, a: 1}
+    - _LightningDirection: {r: 0.93, g: 0.66, b: 0.61, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Specular: {r: 0, g: 0, b: 0, a: 0}
     - _Tint: {r: 1, g: 1, b: 1, a: 1}

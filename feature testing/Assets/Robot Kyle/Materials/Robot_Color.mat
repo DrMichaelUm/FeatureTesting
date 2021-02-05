@@ -9,7 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Robot_Color
   m_Shader: {fileID: 4800000, guid: 4018fae2724815c4a9c61cf354b18549, type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON _NORMALMAP
+  m_ShaderKeywords: _BASE_COLOR_ON _BASE_MAP_ON _ENVIRONMENTREFLECTIONS_OFF _RECEIVE_SHADOWS_OFF
+    _SPECULARHIGHLIGHTS_OFF _SPECULAR_ON _SPECULAR_SETUP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -23,8 +24,12 @@ Material:
         m_Texture: {fileID: 2800000, guid: 0a0e8af2869fa45f78e25460db578482, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _BlendTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 94c473c9137744d7eabd829f1150da8d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -43,38 +48,68 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SkinOnly_SkinTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Boolean_8A2B8817: 0
     - _Albedo: 1
-    - _AlphaClip: 1
+    - _AlphaClip: 0
+    - _AmbientFactor: 0
+    - _BaseColorOn: 0
+    - _BaseMapOn: 0
     - _Blend: 0
+    - _BlendValue: 0
+    - _Brightness: 1
+    - _BrightnessShift: 1
     - _BumpScale: 1
     - _Cull: 2
-    - _Cutoff: 0.58
+    - _Cutoff: 0.47
     - _DstBlend: 0
-    - _EnvironmentReflections: 1
+    - _EnvironmentReflections: 0
+    - _Gloss: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossinessSource: 0
     - _GlossyReflections: 0
-    - _Metallic: 0
+    - _HideForCharacter_SkinOnly_ToggleBlend: 0
+    - _HideForCharacter_ToggleEmission: 0
+    - _HideForCharacter_ToggleNormal: 0
+    - _HideForCharacter_ToggleSpecular: 0
+    - _HueShift: 0
+    - _LightType: 0
+    - _Metallic: 0.29
     - _OcclusionStrength: 1
     - _OpacityThreshold: 0
     - _QueueOffset: 0
-    - _ReceiveShadows: 1
+    - _ReceiveShadows: 0
     - _SampleGI: 0
+    - _Saturation: 1
+    - _SaturationShift: 1
+    - _ShaderType: 0
     - _Shininess: 0
+    - _SkinType: 0
     - _Smoothness: 0.5
     - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
     - _SpecSource: 0
-    - _SpecularHighlights: 1
+    - _SpecularHighlights: 0
     - _SrcBlend: 1
     - _Surface: 0
+    - _ToggleAmbient: 0
+    - _ToggleBaseColor: 1
+    - _ToggleBaseMap: 1
+    - _ToggleSkin: 0
+    - _ToggleSpecular: 1
     - _UseAoMap: 0
     - _UseColorMap: 1
     - _UseEmissiveMap: 0
@@ -82,16 +117,20 @@ Material:
     - _UseNormalMap: 1
     - _UseRoughnessMap: 0
     - _Wawyness: 0.04
-    - _WorkflowMode: 1
+    - _WorkflowMode: 0
     - _ZWrite: 1
     m_Colors:
-    - _AmbientLight: {r: 0.23335709, g: 0.25593063, b: 0.2830189, a: 1}
-    - _BaseColor: {r: 0.8207547, g: 0.8207547, b: 0.8207547, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DiffuseLight: {r: 1, g: 0.9466307, b: 0.45660377, a: 1}
+    - _AmbientColor: {r: 0.08572444, g: 0.25565436, b: 0.26415092, a: 1}
+    - _AmbientLight: {r: 0.49056602, g: 0.023085462, b: 0, a: 1}
+    - _BaseColor: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
+    - _Color: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
+    - _ColorizationColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DiffuseLight: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightningDirection: {r: -0.85, g: 0.2, b: -0.9, a: 0.06}
-    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - _LightColor: {r: 1, g: 0, b: 0.09411764, a: 1}
+    - _LightningDirection: {r: 4.58, g: 2.17, b: 0.71, a: 0}
+    - _SpecColor: {r: 0.49056596, g: 0.49056596, b: 0.49056596, a: 0.5}
+    - _Tint: {r: 1, g: 1, b: 1, a: 1}
     - _UvOffset: {r: 0, g: 0, b: 0, a: 0}
     - _UvTiling: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
