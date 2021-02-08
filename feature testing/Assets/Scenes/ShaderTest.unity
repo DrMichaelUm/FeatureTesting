@@ -212,7 +212,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.953053, b: 0.7018868, a: 1}
+  m_Color: {r: 0.84339625, g: 1, b: 0.9758946, a: 1}
   m_Intensity: 6
   m_Range: 10
   m_SpotAngle: 30
@@ -269,13 +269,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 702153802}
-  m_LocalRotation: {x: -0.7430754, y: 0.36048502, z: 0.21279746, w: -0.52211756}
-  m_LocalPosition: {x: 1.287, y: 5.245, z: 0.251}
+  m_LocalRotation: {x: 0.14665192, y: -0.85044354, z: 0.3932843, w: 0.31712222}
+  m_LocalPosition: {x: 0.613, y: 4.05, z: 0.012}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 38.501, y: -837.736, z: -464.41998}
+  m_LocalEulerAnglesHint: {x: 49.636, y: -139.1, z: 0}
 --- !u!1001 &854538550
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -285,7 +285,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -4216859302048453862, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.0068602534
+      value: 1.474
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
       propertyPath: m_LocalPosition.y
@@ -327,6 +327,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1649218382573798814, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 37cc760cb033e5d4b9e39d433e25273f, type: 2}
     - target: {fileID: -927199367670048503, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
       propertyPath: m_Name
       value: Robot Kyle (1)
@@ -641,7 +645,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!135 &1515165670
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -674,7 +678,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b2b4c3eaa66bd044e9f1d6d59f124698, type: 2}
+  - {fileID: 2100000, guid: c9f0d97b16ee6824db187d5178ab7c6b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -877,7 +881,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1986550346}
   m_LocalRotation: {x: -0, y: -0.99997044, z: -0, w: 0.007691525}
-  m_LocalPosition: {x: 0.17, y: 4.54, z: 13.77}
+  m_LocalPosition: {x: -0.19, y: 3.33, z: 13.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -924,6 +928,10 @@ PrefabInstance:
     - target: {fileID: 7485748661575504424, guid: a98827a6fb0f1fe4983d2db365012210, type: 3}
       propertyPath: m_Name
       value: Unit01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7485748661575504424, guid: a98827a6fb0f1fe4983d2db365012210, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7829903860148734098, guid: a98827a6fb0f1fe4983d2db365012210, type: 3}
       propertyPath: m_LocalPosition.x
