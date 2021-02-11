@@ -35,7 +35,8 @@
         [ShowIf(_NORMAL_MAP_ON)] [Normal] [NoScaleOffset] _Normal_BumpMap ("Bump Map", 2D) = "bump" {}
         
         [Toggle(_SPECULAR_ON)] _HideForCharacter_ToggleSpecular("Use Specular", int) = 0
-        [ShowIf(_SPECULAR_ON)] _Specular_Gloss ("Gloss", Range(0.01, 1)) = 1
+        [ShowIf(_SPECULAR_ON)] _Specular_Tex ("Specular Map", 2D) = "white" {}
+        [ShowIf(_SPECULAR_ON)] _Specular_Shininess ("Shininess", Range(0.01, 1)) = 1
         
         [Toggle(_ATTENUATION_ON)] _ToggleAttenuation("Use Attenuation", int) = 0
         
@@ -163,7 +164,8 @@
             #endif
             
             #if _SPECULAR_ON
-                fixed _Specular_Gloss;
+                sampler2D _Specular_Tex;
+                fixed _Specular_Shininess;
             #endif
             
             #if _EMISSION_ON
@@ -256,9 +258,12 @@
                 //Blinn Phong Specular
                 #if _SPECULAR_ON
                     fixed3 specularColor = lightColor;
-                    float3 viewReflection = reflect(view2fragDir, worldNormal);
+                    fixed4 specTex = tex2D(_Specular_Tex, input.uv) * _Specular_Shininess;
+                    float gloss = specTex.r;
+                    float specular = specTex.g;
+                    
                     float3 halfwayNormal = normalize(lightPos - view2fragDir);
-                    float specularDirectLightMap = pow( dot(worldNormal, halfwayNormal ), _Specular_Gloss * 128);
+                    float specularDirectLightMap = pow( saturate( dot(worldNormal, halfwayNormal )), specular * 128) * gloss * 2;
                     
                     #if _ATTENUATION_ON
                         float specularDirectLight = attenuation * lightColor * specularColor * specularDirectLightMap;
