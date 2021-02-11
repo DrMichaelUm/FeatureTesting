@@ -22,7 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Unit_01
   m_Shader: {fileID: 4800000, guid: 4018fae2724815c4a9c61cf354b18549, type: 3}
-  m_ShaderKeywords: _SPECULAR_ON
+  m_ShaderKeywords: _BASE_COLOR_ON _SPECULAR_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -60,6 +60,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Emission_Map:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainBump:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -69,6 +73,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal_BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -84,6 +92,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Skin_Tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -96,6 +108,11 @@ Material:
     - _Albedo: 0.44
     - _AlphaClip: 0
     - _AmbientFactor: 0.12
+    - _Ambient_Factor: 0.6
+    - _BaseType: 0
+    - _Base_HSV_Hue: 0
+    - _Base_HSV_Saturation: 0
+    - _Base_HSV_Value: 0
     - _Blend: 0
     - _BlendValue: 0
     - _Brightness: 1
@@ -113,6 +130,7 @@ Material:
     - _GlossinessSource: 0
     - _GlossyReflections: 0
     - _HideForCharacter_SkinOnly_ToggleBlend: 0
+    - _HideForCharacter_ToggleBumpMap: 0
     - _HideForCharacter_ToggleEmission: 0
     - _HideForCharacter_ToggleNormal: 0
     - _HideForCharacter_ToggleSpecular: 0
@@ -130,11 +148,15 @@ Material:
     - _ShaderType: 0
     - _Shininess: 0.078125
     - _SkinType: 0
+    - _Skin_HSV_Hue: 0
+    - _Skin_HSV_Saturation: 0
+    - _Skin_HSV_Value: 0
     - _Smoothness: 0.5
     - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
     - _SpecSource: 0
     - _SpecularHighlights: 1
+    - _Specular_Gloss: 1
     - _SrcBlend: 1
     - _Stencil: 0
     - _StencilComp: 8
@@ -143,6 +165,7 @@ Material:
     - _StencilWriteMask: 255
     - _Surface: 0
     - _ToggleAmbient: 0
+    - _ToggleAttenuation: 0
     - _ToggleBaseColor: 0
     - _ToggleBaseMap: 0
     - _ToggleSkin: 0
@@ -160,8 +183,10 @@ Material:
     - _ColorizationColor: {r: 1, g: 1, b: 1, a: 1}
     - _DiffuseLight: {r: 0.96695346, g: 1, b: 0.2396226, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Emission_Color: {r: 0, g: 0, b: 0, a: 0}
     - _LightColor: {r: 0.29999998, g: 0.6, b: 0.6, a: 1}
     - _LightningDirection: {r: 0.93, g: 0.66, b: 0.61, a: 0}
+    - _Skin_Color: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Specular: {r: 0, g: 0, b: 0, a: 0}
     - _Tint: {r: 1, g: 1, b: 1, a: 1}

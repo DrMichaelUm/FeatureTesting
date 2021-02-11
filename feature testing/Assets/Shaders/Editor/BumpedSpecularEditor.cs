@@ -4,10 +4,20 @@ using UnityEngine;
 
 public class BumpedSpecularEditor : ShaderGUI
 {
+    private class ShaderGroupStates
+    {
+        public bool baseColorOn;
+        public bool skinOn;
+        public bool skinColorOn;
+        public bool normalOn;
+        public bool specularOn;
+        public bool emissionOn;
+        public bool ambientOn;
+    }
     enum BaseType
     {
         Colorization = 0,
-        HUEShift = 1,
+        HSVShift = 1,
     }
     enum LightType
     {
@@ -25,7 +35,7 @@ public class BumpedSpecularEditor : ShaderGUI
     enum SkinType
     {
         Colorization = 0,
-        HUEShift = 1,
+        HSVShift = 1,
     }
 
     static readonly int s_BaseType = Shader.PropertyToID("_BaseType");
@@ -74,6 +84,7 @@ public class BumpedSpecularEditor : ShaderGUI
     bool cashedNormalToggle = false;
     bool cashedEmissionToggle = false;
 
+    private ShaderGroupStates shaderGroupStates = new ShaderGroupStates();
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
     {
         var material = materialEditor.target as Material;
@@ -88,25 +99,26 @@ public class BumpedSpecularEditor : ShaderGUI
 
         materialEditor.SetDefaultGUIWidths();
 
-        var baseColorOn = material.IsKeywordEnabled(k_BaseColorOnKeyword);
-        var skinOn = material.IsKeywordEnabled(k_SkinOnKeyword);
-        var skinColorOn = material.IsKeywordEnabled(k_SkinColorOnKeyword);
-        var normalOn = material.IsKeywordEnabled(k_NormalOnKeyword);
-        var specularOn = material.IsKeywordEnabled(k_SpecularOnKeyword);
-        var emissionOn = material.IsKeywordEnabled(k_EmissionOnKeyword);
-        var ambientOn = material.IsKeywordEnabled(k_AmbientOnKeyword);
-        var isGeneral = (ShaderType)m_SelectedShaderType == ShaderType.General;
-        
+        shaderGroupStates.baseColorOn = material.IsKeywordEnabled(k_BaseColorOnKeyword);
+        shaderGroupStates.skinOn = material.IsKeywordEnabled(k_SkinOnKeyword);
+        shaderGroupStates.skinColorOn = material.IsKeywordEnabled(k_SkinColorOnKeyword);
+        shaderGroupStates.normalOn = material.IsKeywordEnabled(k_NormalOnKeyword);
+        shaderGroupStates.specularOn = material.IsKeywordEnabled(k_SpecularOnKeyword);
+        shaderGroupStates.emissionOn = material.IsKeywordEnabled(k_EmissionOnKeyword);
+        shaderGroupStates.ambientOn = material.IsKeywordEnabled(k_AmbientOnKeyword);
+
+        var isGeneral = (ShaderType) m_SelectedShaderType == ShaderType.General;
         if (!isGeneral)
         {
-            if (!cashedNormalToggle && material.IsKeywordEnabled(k_NormalOnKeyword))
-                cashedNormalToggle = true;
+             if (!cashedNormalToggle && material.IsKeywordEnabled(k_NormalOnKeyword))
+                 cashedNormalToggle = true;
             
-            if (!cashedSpecularToggle && material.IsKeywordEnabled(k_SpecularOnKeyword))
-                cashedSpecularToggle = true;
+             if (!cashedSpecularToggle && material.IsKeywordEnabled(k_SpecularOnKeyword))
+                 cashedSpecularToggle = true;
             
-            if (!cashedEmissionToggle && material.IsKeywordEnabled(k_EmissionOnKeyword))
-                cashedEmissionToggle = true;
+             if (!cashedEmissionToggle && material.IsKeywordEnabled(k_EmissionOnKeyword))
+                 cashedEmissionToggle = true;
+            
             //material.DisableKeyword(k_SkinBlend);
             material.DisableKeyword(k_NormalOnKeyword);
             material.DisableKeyword(k_SpecularOnKeyword);
@@ -125,7 +137,7 @@ public class BumpedSpecularEditor : ShaderGUI
                 material.EnableKeyword(k_SpecularOnKeyword);
                 cashedSpecularToggle = false;
             }
-
+        
             if (cashedEmissionToggle)
             {
                 material.EnableKeyword(k_EmissionOnKeyword);
@@ -133,7 +145,7 @@ public class BumpedSpecularEditor : ShaderGUI
             }
         }
         
-        if (!skinOn)
+        if (!shaderGroupStates.skinOn)
         {
             material.DisableKeyword(k_SkinHsvKeyword);
             material.DisableKeyword(k_SkinColorOnKeyword);
@@ -174,18 +186,18 @@ public class BumpedSpecularEditor : ShaderGUI
                 EditorGUILayout.Space();
                 EditorGUILayout.Space();
                 
-                if (skinOn)
+                if (shaderGroupStates.skinOn)
                     GUILayout.BeginVertical("HelpBox");
             }
 
             //Skin Color|HSV switch
-            if (skinOn && properties[i].name == k_SkinColorPropertyName)
+            if (shaderGroupStates.skinOn && properties[i].name == k_SkinColorPropertyName)
             {
                 m_SelectedSkinType = GUILayout.Toolbar(material.GetInt(s_SkinType), 
                                                        Enum.GetNames(typeof(SkinType)));
                 material.SetInt(s_SkinType, m_SelectedSkinType);
             
-                if (skinOn)
+                if (shaderGroupStates.skinOn)
                 {
                     if (m_SelectedSkinType == (int)SkinType.Colorization)
                     {
@@ -200,7 +212,7 @@ public class BumpedSpecularEditor : ShaderGUI
                 }
             }
             
-            if (skinOn && properties[i].name == k_NormalTogglePropertyName)
+            if (shaderGroupStates.skinOn && properties[i].name == k_NormalTogglePropertyName)
             {
                 GUILayout.EndVertical();
             }
@@ -216,71 +228,71 @@ public class BumpedSpecularEditor : ShaderGUI
             {
                 GUILayout.EndVertical();
             }
-            
+
             if (properties[i].name == k_AmbientFactorPropertyName)
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.Space();
-                
+
                 GUILayout.BeginVertical("HelpBox");
-            
-                m_SelectedLightType = GUILayout.Toolbar(material.GetInt(s_LightType), 
+
+                m_SelectedLightType = GUILayout.Toolbar(material.GetInt(s_LightType),
                                                         Enum.GetNames(typeof(LightType)));
                 material.SetInt(s_LightType, m_SelectedLightType);
-            
-                if (m_SelectedLightType == (int)LightType.Ambient)
+
+                if (m_SelectedLightType == (int) LightType.Ambient)
+                {
                     material.EnableKeyword(k_AmbientOnKeyword);
-                else
+                    shaderGroupStates.ambientOn = material.IsKeywordEnabled(k_AmbientOnKeyword);
+                }
+
+                if (m_SelectedLightType != (int) LightType.Ambient)
                     material.DisableKeyword(k_AmbientOnKeyword);
             }
-                
+        
 
             if (!properties[i].name.Contains(k_HideForCharacter) || isGeneral)
             {
-                
-                if (CanDraw(properties[i]))
+                if (CanDraw(properties[i], shaderGroupStates))
                     properties[i].DisplayProperty(materialEditor);
             }
-            else
-                material.DisableKeyword(properties[i].name);
         }
         
         GUILayout.EndVertical();
-        //materialEditor.PropertiesDefaultGUI(properties);
+    }
+    
+    bool CanDraw (MaterialProperty property, ShaderGroupStates shaderGroupStates)
+    {
+        // ReSharper disable once ReplaceWithSingleAssignment.True
+        bool canDraw = true;
 
-        bool CanDraw (MaterialProperty property)
-        {
-            // ReSharper disable once ReplaceWithSingleAssignment.True
-            bool canDraw = true;
+        if (shaderGroupStates.baseColorOn && property.name.Contains(k_BaseHSVGroupKeyword))
+            canDraw = false;
 
-            if (baseColorOn && property.name.Contains(k_BaseHSVGroupKeyword))
-                canDraw = false;
-                    
-            if (!baseColorOn && property.name == k_BaseColorKeyword)
-                canDraw = false;
-                    
-            if (!skinOn && property.name.Contains(k_SkinGroupKeyword))
-                canDraw = false;
+        if (!shaderGroupStates.baseColorOn && property.name == k_BaseColorKeyword)
+            canDraw = false;
 
-            if (skinColorOn && property.name.Contains(k_SkinHSVGroupKeyword))
-                canDraw = false;
+        if (!shaderGroupStates.skinOn && property.name.Contains(k_SkinGroupKeyword))
+            canDraw = false;
 
-            if (!skinColorOn && property.name == k_SkinColorPropertyName)
-                canDraw = false;
-                    
-            if (!normalOn && property.name.Contains(k_NormalGroupKeyword))
-                canDraw = false;
+        if (shaderGroupStates.skinColorOn && property.name.Contains(k_SkinHSVGroupKeyword))
+            canDraw = false;
 
-            if (!specularOn && property.name.Contains(k_SpecularGroupKeyword))
-                canDraw = false;
+        if (!shaderGroupStates.skinColorOn && property.name == k_SkinColorPropertyName)
+            canDraw = false;
 
-            if (!emissionOn && property.name.Contains(k_EmissionGroupKeyword))
-                canDraw = false;
+        if (!shaderGroupStates.normalOn && property.name.Contains(k_NormalGroupKeyword))
+            canDraw = false;
 
-            if (!ambientOn && property.name.Contains(k_AmbientGroupKeyword))
-                canDraw = false;
+        if (!shaderGroupStates.specularOn && property.name.Contains(k_SpecularGroupKeyword))
+            canDraw = false;
 
-            return canDraw;
-        }
+        if (!shaderGroupStates.emissionOn && property.name.Contains(k_EmissionGroupKeyword))
+            canDraw = false;
+
+        if (!shaderGroupStates.ambientOn && property.name == k_AmbientFactorPropertyName)
+            canDraw = false;
+
+        return canDraw;
     }
 }

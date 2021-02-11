@@ -203,22 +203,30 @@
             
             fixed4 frag (VertexOutput input) : SV_Target
             {
+                float4 col = float4(0, 0, 0, 0);
                 float2 uv = input.uv;
-
+                fixed4 baseMap = tex2D(_MainTex, uv);
+                
+                //Saturation and Brightness
+                const float3 kLumCoeff = float3( 0.2125, 0.7154, 0.0721 );
+                float3 intensity = dot( baseMap.rgb, kLumCoeff );
+                float3 intensityRGB =  float3( lerp( intensity, baseMap.rgb, _Saturation ) );
+                baseMap = half4( intensityRGB * _Brightness, baseMap.a );
+                
                 #if _HSV_ON
                     fixed3 baseColor = HSV_To_RGB(_Base_HSV_Hue, _Base_HSV_Saturation, _Base_HSV_Value);
                 #else
                     fixed3 baseColor = _Color.rgb;
                 #endif
                 
-                fixed4 baseMap = tex2D(_MainTex, uv) * float4(baseColor, 0);
+                baseMap *= float4(baseColor, 0);
                 
                 if (_LightType == 0)
                     return baseMap;
                 
                 float3 camPos = _WorldSpaceCameraPos.xyz;
                 float3 worldPos = input.worldVertex;
-                float3 lightPos = _WorldSpaceLightPos0.xyz;//normalize(_LightningDirection);
+                float3 lightPos = normalize(_WorldSpaceLightPos0.xyz);//normalize(_LightningDirection);
                 float3 view2fragDir = normalize(worldPos - camPos);
                 fixed3 lightColor = _LightColor0.rgb;
                 
@@ -229,24 +237,25 @@
                     worldNormal.x = dot(input.tspace0, tnormal);
                     worldNormal.y = dot(input.tspace1, tnormal);
                     worldNormal.z = dot(input.tspace2, tnormal);
+                    worldNormal = normalize(worldNormal);
                 #else
                     float3 worldNormal = normalize(input.worldNormal);
                 #endif
                 
                 //Attenuation
                 #if _ATTENUATION_ON
-                    float3 light2fragDir = worldPos - lightPos;
+                    float3 light2fragDir = normalize(worldPos - lightPos);
                     float oneOverDistance = 1.0 / length(light2fragDir);
                     float attenuation = lerp(1.0, oneOverDistance, lightPos);
                 #endif
                 
                 //Diffuse light
                 #if _ATTENUATION_ON
-                    float diffuseMap = attenuation * saturate( dot(lightPos, worldNormal) ) * lightColor;
+                    float diffuseMap = attenuation * saturate( dot(lightPos, worldNormal) );
                 #else
-                    float diffuseMap = saturate( dot(lightPos, worldNormal) ) * lightColor;
+                    float diffuseMap = saturate( dot(lightPos, worldNormal) );
                 #endif
-                
+
                 //lambertian
                 #if _AMBIENT_ON
                     fixed ambientFactor = _Ambient_Factor;
@@ -257,7 +266,6 @@
                 
                 //Blinn Phong Specular
                 #if _SPECULAR_ON
-                    fixed3 specularColor = lightColor;
                     fixed4 specTex = tex2D(_Specular_Tex, input.uv) * _Specular_Shininess;
                     float gloss = specTex.r;
                     float specular = specTex.g;
@@ -266,9 +274,9 @@
                     float specularDirectLightMap = pow( saturate( dot(worldNormal, halfwayNormal )), specular * 128) * gloss * 2;
                     
                     #if _ATTENUATION_ON
-                        float specularDirectLight = attenuation * lightColor * specularColor * specularDirectLightMap;
+                        float specularDirectLight = attenuation * specularDirectLightMap;
                     #else
-                        float specularDirectLight = lightColor * specularColor * specularDirectLightMap;
+                        float specularDirectLight = specularDirectLightMap;
                     #endif
                     
                 #else
@@ -283,13 +291,7 @@
                     float4 emissionColor = float4(0,0,0,0);
                 #endif
                 
-                //Saturation and Brightness
-                const float3 kLumCoeff = float3( 0.2125, 0.7154, 0.0721 );
-                float3 intensity = dot( baseMap.rgb, kLumCoeff );
-                float3 intensityRGB =  float3( lerp( intensity, baseMap.rgb, _Saturation ) );
-                baseMap = half4( intensityRGB * _Brightness, baseMap.a );
-                
-                float4 col = lambertian * baseMap + specularDirectLight + emissionColor;
+                col.rgb = baseMap * lightColor.rgb * lambertian + lightColor.rgb * specularDirectLight + emissionColor;
                 return col;
             }
             
@@ -297,6 +299,6 @@
         }
     }
     
-    FallBack "Universl Render Pipeline/Autodesk Interactive/Autodesk Interactive"
+    FallBack "Universl Render Pipeline/Lit"
     CustomEditor "BumpedSpecularEditor" 
 }

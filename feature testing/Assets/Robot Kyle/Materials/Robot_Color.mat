@@ -22,8 +22,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Robot_Color
   m_Shader: {fileID: 4800000, guid: 4018fae2724815c4a9c61cf354b18549, type: 3}
-  m_ShaderKeywords: _ATTENUATION_ON _BASE_COLOR_ON _ENVIRONMENTREFLECTIONS_OFF _NORMALMAP
-    _NORMAL_MAP_ON _RECEIVE_SHADOWS_OFF _SKIN_COLOR_ON _SKIN_ON _SPECULAR_SETUP
+  m_ShaderKeywords: _AMBIENT_ON _BASE_COLOR_ON _ENVIRONMENTREFLECTIONS_OFF _RECEIVE_SHADOWS_OFF
+    _SPECULAR_SETUP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -46,7 +46,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 94c473c9137744d7eabd829f1150da8d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -93,6 +93,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Specular_Tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Tex:
         m_Texture: {fileID: 2800000, guid: 0a0e8af2869fa45f78e25460db578482, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -111,7 +115,7 @@ Material:
     - _AmbientBrightness: 1.33
     - _AmbientFactor: 1
     - _AmbientSaturation: 2.92
-    - _Ambient_Factor: 1
+    - _Ambient_Factor: 0.094
     - _BaseColorOn: 0
     - _BaseHSV_Hue: 0.11
     - _BaseHSV_Saturation: 0.813
@@ -141,20 +145,20 @@ Material:
     - _GlossinessSource: 0
     - _GlossyReflections: 0
     - _HideForCharacter_SkinOnly_ToggleBlend: 0
-    - _HideForCharacter_ToggleBumpMap: 1
+    - _HideForCharacter_ToggleBumpMap: 0
     - _HideForCharacter_ToggleEmission: 0
     - _HideForCharacter_ToggleNormal: 0
-    - _HideForCharacter_ToggleSpecular: 1
+    - _HideForCharacter_ToggleSpecular: 0
     - _Hue: 0.389
     - _HueShift: 0
-    - _LightType: 1
+    - _LightType: 2
     - _Metallic: 0.29
     - _OcclusionStrength: 1
     - _OpacityThreshold: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 0
     - _SampleGI: 0
-    - _Saturation: 1.24
+    - _Saturation: 1.57
     - _SaturationShift: 1
     - _ShaderType: 0
     - _Shininess: 18.7
@@ -168,22 +172,23 @@ Material:
     - _Skin_HSV_Hue: 0
     - _Skin_HSV_Saturation: 0
     - _Skin_HSV_Value: 0
-    - _Smoothness: 0.848
+    - _Smoothness: 1
     - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
     - _SpecSource: 0
     - _SpecularHighlights: 1
     - _Specular_Gloss: 0.945
+    - _Specular_Shininess: 1
     - _SrcBlend: 1
     - _Surface: 0
     - _ToggleAmbient: 1
-    - _ToggleAttenuation: 1
+    - _ToggleAttenuation: 0
     - _ToggleBaseColor: 1
     - _ToggleBaseMap: 1
     - _ToggleBumpMap: 0
     - _ToggleEmission: 0
     - _ToggleHSV: 0
-    - _ToggleSkin: 1
+    - _ToggleSkin: 0
     - _ToggleSkinHSV: 0
     - _ToggleSpecular: 0
     - _UseAoMap: 0
@@ -199,8 +204,8 @@ Material:
     m_Colors:
     - _AmbientColor: {r: 1, g: 0, b: 0, a: 1}
     - _AmbientLight: {r: 0.49056602, g: 0.023085462, b: 0, a: 1}
-    - _BaseColor: {r: 0.18307221, g: 0.28976208, b: 0.51886785, a: 1}
-    - _Color: {r: 0.31014594, g: 0.42853642, b: 0.6792453, a: 1}
+    - _BaseColor: {r: 1, g: 0.85882354, b: 0, a: 1}
+    - _Color: {r: 1, g: 0.85882354, b: 0, a: 1}
     - _ColorizationColor: {r: 1, g: 1, b: 1, a: 1}
     - _DiffuseLight: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0.003921569, a: 1}
