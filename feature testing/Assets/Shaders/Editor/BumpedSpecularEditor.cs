@@ -60,7 +60,7 @@ public class BumpedSpecularEditor : ShaderGUI
     const string k_AmbientFactorPropertyName = "_Ambient_Factor";
     
     const string k_NormalTogglePropertyName = "_HideForCharacter_ToggleBumpMap";
-    const string k_NormalOnKeyword = "_NORMAL_ON";
+    const string k_NormalOnKeyword = "_NORMAL_MAP_ON";
     
     const string k_SpecularOnKeyword = "_SPECULAR_ON";
     const string k_EmissionOnKeyword = "_EMISSION_ON";
@@ -69,6 +69,10 @@ public class BumpedSpecularEditor : ShaderGUI
     int m_SelectedShaderType;
     int m_SelectedSkinType;
     int m_SelectedLightType;
+    
+    bool cashedSpecularToggle = false;
+    bool cashedNormalToggle = false;
+    bool cashedEmissionToggle = false;
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
     {
@@ -95,10 +99,38 @@ public class BumpedSpecularEditor : ShaderGUI
         
         if (!isGeneral)
         {
+            if (!cashedNormalToggle && material.IsKeywordEnabled(k_NormalOnKeyword))
+                cashedNormalToggle = true;
+            
+            if (!cashedSpecularToggle && material.IsKeywordEnabled(k_SpecularOnKeyword))
+                cashedSpecularToggle = true;
+            
+            if (!cashedEmissionToggle && material.IsKeywordEnabled(k_EmissionOnKeyword))
+                cashedEmissionToggle = true;
             //material.DisableKeyword(k_SkinBlend);
             material.DisableKeyword(k_NormalOnKeyword);
             material.DisableKeyword(k_SpecularOnKeyword);
             material.DisableKeyword(k_EmissionOnKeyword);
+        }
+        else
+        {
+            if (cashedNormalToggle)
+            {
+                material.EnableKeyword(k_NormalOnKeyword);
+                cashedNormalToggle = false;
+            }
+            
+            if (cashedSpecularToggle)
+            {
+                material.EnableKeyword(k_SpecularOnKeyword);
+                cashedSpecularToggle = false;
+            }
+
+            if (cashedEmissionToggle)
+            {
+                material.EnableKeyword(k_EmissionOnKeyword);
+                cashedEmissionToggle = false;
+            }
         }
         
         if (!skinOn)
