@@ -17,7 +17,6 @@
         _MainTex ("Texture", 2D) = "white" {}
         [ShowIf(_BASE_COLOR_ON)] _Color ("Base Color (RGB)", Color) = (0, 0, 0, 0)
         
-        //[Toggle(_HSV_ON)] _ToggleHSV("Use HSV", int) = 0
         [ShowIf(_HSV_ON)] _Base_HSV_Hue ("Hue", Range(0, 1)) = 0
         [ShowIf(_HSV_ON)] _Base_HSV_Saturation ("Saturation", Range(0,1)) = 0
         [ShowIf(_HSV_ON)] _Base_HSV_Value ("Value", Range(0, 1)) = 0
@@ -26,10 +25,13 @@
         [ShowIf(_SKIN_ON)] _Skin_Tex ("Skin (RGB) Mask (A)", 2D) = "white" {}
         [ShowIf(_SKIN_COLOR_ON)] _Skin_Color ("Skin Color", Color) = (0,0,0,0)
         
-        //[Toggle(_SKIN_HSV_ON)] _ToggleSkinHSV("Use HSV", int) = 0
         [ShowIf(_SKIN_HSV_ON)] _Skin_HSV_Hue ("Hue", Range(0, 1)) = 0
         [ShowIf(_SKIN_HSV_ON)] _Skin_HSV_Saturation ("Saturation", Range(0,1)) = 0
-        [ShowIf(_SKIN_HSV_ON)] _Skin_HSV_Value ("Value", Range(0, 1)) = 0 
+        [ShowIf(_SKIN_HSV_ON)] _Skin_HSV_Value ("Value", Range(0, 1)) = 0
+        
+        [Toggle(_SKIN_BLEND_ON)] _HideForCharacter_Skin_ToggleBlend("Blend Texture On Skin", Int) = 0
+        [ShowIf(_SKIN_BLEND_ON)] _Skin_Blend_Tex ("Blend (RBG)", 2D) = "white" {}
+        [ShowIf(_SKIN_BLEND_ON)] _Skin_Blend_Value("Blend Value", Range(0, 1)) = 0
         
         [Toggle(_NORMAL_MAP_ON)] _HideForCharacter_ToggleBumpMap ("Use Normal Map", int) = 0
         [ShowIf(_NORMAL_MAP_ON)] [Normal] [NoScaleOffset] _Normal_BumpMap ("Bump Map", 2D) = "bump" {}
@@ -44,7 +46,6 @@
         [ShowIf(_EMISSION_ON)] [NoScaleOffset] _Emission_Map ("Emission Map", 2D) = "white" {}
         [ShowIf(_EMISSION_ON)] [HDR] _Emission_Color ("Emission Color (HDR)" , Color) = (0, 0, 0, 0)
         
-        //[Toggle(_AMBIENT_ON)] _ToggleAmbient("Use Ambient Light", int) = 0
         [ShowIf(_AMBIENT_ON)] _Ambient_Factor ("Ambient Factor", Range(0,1)) = 0.6
          _Saturation ("Saturation", Range(0, 10)) = 1
          _Brightness ("Brightness", Range(0, 10)) = 1
@@ -101,8 +102,9 @@
             #pragma shader_feature_local _ _BASE_COLOR_ON
             #pragma shader_feature_local _ _HSV_ON
             #pragma shader_feature_local _ _SKIN_ON
-            #pragma shader_feature_local _ _SKIN_HSV_ON
             #pragma shader_feature_local _ _SKIN_COLOR_ON
+            #pragma shader_feature_local _ _SKIN_HSV_ON
+            #pragma shader_feature_local _ _SKIN_BLEND_ON
             #pragma shader_feature_local _ _NORMAL_MAP_ON
             #pragma shader_feature_local _ _SPECULAR_ON
             #pragma shader_feature_local _ _ATTENUATION_ON
@@ -157,6 +159,11 @@
                 #elif _SKIN_COLOR_ON 
                     fixed4 _Skin_Color;
                 #endif
+                
+                #if _SKIN_BLEND_ON
+                    sampler2D _Skin_Blend_Tex;
+                    float _Skin_Blend_Value;
+                #endif
             #endif
             
             #if _NORMAL_MAP_ON
@@ -206,6 +213,24 @@
                 float4 col = float4(0, 0, 0, 0);
                 float2 uv = input.uv;
                 fixed4 baseMap = tex2D(_MainTex, uv);
+                
+                #if _SKIN_ON
+                    fixed4 mask = tex2D(_Skin_Tex, uv);
+                    
+                    #if _SKIN_BLEND_ON
+                        fixed4 blend = tex2D(_Skin_Blend_Tex, uv);
+                        mask = lerp(mask, blend, _Skin_Blend_Value);
+                    #endif
+                    
+                    #if _SKIN_HSV_ON
+                        //mask.rgb = shift_col(mask.rgb,
+                        //    float3(_HueShift * 360, _SaturationShift, _BrightnessShift));
+                        mask.rgb = HSV_To_RGB(_Skin_HSV_Hue, _Skin_HSV_Saturation, _Skin_HSV_Value);
+                    #elif _SKIN_COLOR_ON
+                        mask.rgb = baseMap.rgb * _Skin_Color;
+                    #endif
+                    baseMap.rgb = baseMap.rgb * (1 - mask.a) + mask.rgb * mask.a;
+                #endif
                 
                 //Saturation and Brightness
                 const float3 kLumCoeff = float3( 0.2125, 0.7154, 0.0721 );

@@ -23,7 +23,7 @@ Material:
   m_Name: Robot_Color
   m_Shader: {fileID: 4800000, guid: 4018fae2724815c4a9c61cf354b18549, type: 3}
   m_ShaderKeywords: _AMBIENT_ON _BASE_COLOR_ON _ENVIRONMENTREFLECTIONS_OFF _RECEIVE_SHADOWS_OFF
-    _SPECULAR_SETUP
+    _SKIN_COLOR_ON _SKIN_ON _SPECULAR_SETUP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -81,8 +81,12 @@ Material:
         m_Texture: {fileID: 2800000, guid: 0a0e8af2869fa45f78e25460db578482, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Skin_Blend_Tex:
+        m_Texture: {fileID: 10912, guid: 0000000000000000f000000000000000, type: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Skin_Tex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 10912, guid: 0000000000000000f000000000000000, type: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -115,7 +119,7 @@ Material:
     - _AmbientBrightness: 1.33
     - _AmbientFactor: 1
     - _AmbientSaturation: 2.92
-    - _Ambient_Factor: 0.094
+    - _Ambient_Factor: 0.145
     - _BaseColorOn: 0
     - _BaseHSV_Hue: 0.11
     - _BaseHSV_Saturation: 0.813
@@ -125,7 +129,7 @@ Material:
     - _BaseSaturation: 0.796
     - _BaseType: 0
     - _BaseValue: 0.527
-    - _Base_HSV_Hue: 0.106
+    - _Base_HSV_Hue: 0.155
     - _Base_HSV_Saturation: 0.88
     - _Base_HSV_Value: 0.883
     - _Blend: 0
@@ -145,6 +149,7 @@ Material:
     - _GlossinessSource: 0
     - _GlossyReflections: 0
     - _HideForCharacter_SkinOnly_ToggleBlend: 0
+    - _HideForCharacter_Skin_ToggleBlend: 0
     - _HideForCharacter_ToggleBumpMap: 0
     - _HideForCharacter_ToggleEmission: 0
     - _HideForCharacter_ToggleNormal: 0
@@ -169,9 +174,10 @@ Material:
     - _SkinSaturation: 0.11
     - _SkinType: 0
     - _SkinValue: 0.352
-    - _Skin_HSV_Hue: 0
-    - _Skin_HSV_Saturation: 0
-    - _Skin_HSV_Value: 0
+    - _Skin_Blend_Value: 0.252
+    - _Skin_HSV_Hue: 0.647
+    - _Skin_HSV_Saturation: 0.856
+    - _Skin_HSV_Value: 0.538
     - _Smoothness: 1
     - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
@@ -188,7 +194,7 @@ Material:
     - _ToggleBumpMap: 0
     - _ToggleEmission: 0
     - _ToggleHSV: 0
-    - _ToggleSkin: 0
+    - _ToggleSkin: 1
     - _ToggleSkinHSV: 0
     - _ToggleSpecular: 0
     - _UseAoMap: 0
@@ -213,7 +219,7 @@ Material:
     - _LightColor: {r: 1, g: 0, b: 0.09411764, a: 1}
     - _LightningDirection: {r: 4.58, g: 2.17, b: 0.71, a: 0}
     - _SkinColor: {r: 0.7924528, g: 0.15998574, b: 0.15998574, a: 1}
-    - _Skin_Color: {r: 1, g: 0, b: 0, a: 0}
+    - _Skin_Color: {r: 0.46226418, g: 0.067159116, b: 0.067159116, a: 0.9529412}
     - _SpecColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 0.5}
     - _Tint: {r: 1, g: 1, b: 1, a: 1}
     - _UvOffset: {r: 0, g: 0, b: 0, a: 0}
