@@ -22,8 +22,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Robot_Color
   m_Shader: {fileID: 4800000, guid: 4018fae2724815c4a9c61cf354b18549, type: 3}
-  m_ShaderKeywords: _AMBIENT_ON _BASE_COLOR_ON _ENVIRONMENTREFLECTIONS_OFF _RECEIVE_SHADOWS_OFF
-    _SKIN_COLOR_ON _SKIN_ON _SPECULAR_SETUP
+  m_ShaderKeywords: _AMBIENT_ON _ATTENUATION_ON _BASE_COLOR_ON _ENVIRONMENTREFLECTIONS_OFF
+    _NORMAL_MAP_ON _RECEIVE_SHADOWS_OFF _SKIN_COLOR_ON _SKIN_ON _SPECULAR_ON _SPECULAR_SETUP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -150,10 +150,10 @@ Material:
     - _GlossyReflections: 0
     - _HideForCharacter_SkinOnly_ToggleBlend: 0
     - _HideForCharacter_Skin_ToggleBlend: 0
-    - _HideForCharacter_ToggleBumpMap: 0
+    - _HideForCharacter_ToggleBumpMap: 1
     - _HideForCharacter_ToggleEmission: 0
     - _HideForCharacter_ToggleNormal: 0
-    - _HideForCharacter_ToggleSpecular: 0
+    - _HideForCharacter_ToggleSpecular: 1
     - _Hue: 0.389
     - _HueShift: 0
     - _LightType: 2
@@ -188,7 +188,7 @@ Material:
     - _SrcBlend: 1
     - _Surface: 0
     - _ToggleAmbient: 1
-    - _ToggleAttenuation: 0
+    - _ToggleAttenuation: 1
     - _ToggleBaseColor: 1
     - _ToggleBaseMap: 1
     - _ToggleBumpMap: 0

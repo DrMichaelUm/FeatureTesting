@@ -107,8 +107,8 @@
             #pragma shader_feature_local _ _SKIN_BLEND_ON
             #pragma shader_feature_local _ _NORMAL_MAP_ON
             #pragma shader_feature_local _ _SPECULAR_ON
-            #pragma shader_feature_local _ _ATTENUATION_ON
             #pragma shader_feature_local _ _EMISSION_ON
+            #pragma shader_feature_local _ _ATTENUATION_ON
             #pragma shader_feature_local _ _AMBIENT_ON
             
             #include "UnityCG.cginc"
@@ -135,7 +135,7 @@
                 half3 tspace2 : TEXCOORD5; // tangent.z, bitangent.z, normal.z
             };
 
-            //CBUFFER_START(UnityPerMaterial)
+            CBUFFER_START(UnityPerMaterial)
             
             int _LightType;
             
@@ -145,7 +145,7 @@
                 float _Base_HSV_Hue;
                 float _Base_HSV_Saturation;
                 float _Base_HSV_Value;
-            #else
+            #elif _BASE_COLOR_ON
                 fixed4 _Color;
             #endif
             
@@ -180,9 +180,14 @@
                 float3 _Emission_Color;
             #endif
             
-            float _Ambient_Factor;
+            #if _AMBIENT_ON
+                float _Ambient_Factor;
+            #endif
+            
             float _Saturation;
             float _Brightness;
+            
+            CBUFFER_END
             
             // vertex shader
             VertexOutput vert (VertexInput input)
@@ -210,9 +215,10 @@
             
             fixed4 frag (VertexOutput input) : SV_Target
             {
-                float4 col = float4(0, 0, 0, 0);
+                float4 resultCol = float4(0, 0, 0, 0);
                 float2 uv = input.uv;
                 fixed4 baseMap = tex2D(_MainTex, uv);
+                fixed3 baseColor = fixed3(0, 0, 0);
                 
                 #if _SKIN_ON
                     fixed4 mask = tex2D(_Skin_Tex, uv);
@@ -239,21 +245,20 @@
                 baseMap = half4( intensityRGB * _Brightness, baseMap.a );
                 
                 #if _HSV_ON
-                    fixed3 baseColor = HSV_To_RGB(_Base_HSV_Hue, _Base_HSV_Saturation, _Base_HSV_Value);
-                #else
-                    fixed3 baseColor = _Color.rgb;
+                    baseColor = HSV_To_RGB(_Base_HSV_Hue, _Base_HSV_Saturation, _Base_HSV_Value);
+                #elif _BASE_COLOR_ON
+                    baseColor = _Color.rgb;
                 #endif
                 
-                baseMap *= float4(baseColor, 0);
+                baseMap *= float4(baseColor, baseMap.a);
                 
                 if (_LightType == 0)
                     return baseMap;
                 
                 float3 camPos = _WorldSpaceCameraPos.xyz;
+                float3 lightPos = normalize(_WorldSpaceLightPos0.xyz);
                 float3 worldPos = input.worldVertex;
-                float3 lightPos = normalize(_WorldSpaceLightPos0.xyz);//normalize(_LightningDirection);
                 float3 view2fragDir = normalize(worldPos - camPos);
-                fixed3 lightColor = _LightColor0.rgb;
                 
                 #if _NORMAL_MAP_ON
                     half3 tnormal = UnpackNormal(tex2D(_Normal_BumpMap, input.uv));
@@ -311,13 +316,12 @@
                 //Emission
                 #if _EMISSION_ON
                     float4 emissionColor = float4(_Emission_Color * tex2D(_Emission_Map, input.uv).rgb, 0);
-                    //emissionColor = float4(_Emission_Color, 0);
                 #else
-                    float4 emissionColor = float4(0,0,0,0);
+                    float4 emissionColor = float4(0, 0, 0, 0);
                 #endif
                 
-                col.rgb = baseMap * lightColor.rgb * lambertian + lightColor.rgb * specularDirectLight + emissionColor;
-                return col;
+                resultCol.rgb = baseMap * _LightColor0.rgb * lambertian + _LightColor0.rgb * specularDirectLight + emissionColor;
+                return resultCol;
             }
             
             ENDCG
