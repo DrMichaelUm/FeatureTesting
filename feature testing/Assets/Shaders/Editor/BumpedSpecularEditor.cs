@@ -8,10 +8,11 @@ public class BumpedSpecularEditor : ShaderGUI
 
     private class BumpSpecularGroupStates
     {
-        public Dictionary<string, ShaderGroupState> states;
+        public readonly Dictionary<string, ShaderGroupState> states;
 
         public BumpSpecularGroupStates(List<(string toggleKeyword, string groupKeyword)> keywords)
         {
+            Debug.Log("Group States Construct");
             states = new Dictionary<string, ShaderGroupState>();
 
             foreach (var keyword in keywords)
@@ -23,8 +24,8 @@ public class BumpedSpecularEditor : ShaderGUI
 
     class ShaderGroupState
     {
-        public string toggleKeyword { get; private set; }
-        public string groupKeyword { get; private set; }
+        public readonly string toggleKeyword;
+        public readonly string groupKeyword;
         public bool isActive;
         public bool cashedIsActive;
         public ShaderGroupState(string toggleKeyword, string groupKeyword)

@@ -23,7 +23,8 @@ Material:
   m_Name: Robot_Color
   m_Shader: {fileID: 4800000, guid: 4018fae2724815c4a9c61cf354b18549, type: 3}
   m_ShaderKeywords: _AMBIENT_ON _ATTENUATION_ON _BASE_COLOR_ON _ENVIRONMENTREFLECTIONS_OFF
-    _NORMAL_MAP_ON _RECEIVE_SHADOWS_OFF _SKIN_COLOR_ON _SKIN_ON _SPECULAR_ON _SPECULAR_SETUP
+    _NORMAL_MAP_ON _RECEIVE_SHADOWS_OFF _SKIN_BLEND_ON _SKIN_COLOR_ON _SKIN_ON _SPECULAR_ON
+    _SPECULAR_SETUP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -82,7 +83,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Skin_Blend_Tex:
-        m_Texture: {fileID: 10912, guid: 0000000000000000f000000000000000, type: 0}
+        m_Texture: {fileID: 10906, guid: 0000000000000000f000000000000000, type: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Skin_Tex:
@@ -149,7 +150,7 @@ Material:
     - _GlossinessSource: 0
     - _GlossyReflections: 0
     - _HideForCharacter_SkinOnly_ToggleBlend: 0
-    - _HideForCharacter_Skin_ToggleBlend: 0
+    - _HideForCharacter_Skin_ToggleBlend: 1
     - _HideForCharacter_ToggleBumpMap: 1
     - _HideForCharacter_ToggleEmission: 0
     - _HideForCharacter_ToggleNormal: 0
@@ -174,7 +175,7 @@ Material:
     - _SkinSaturation: 0.11
     - _SkinType: 0
     - _SkinValue: 0.352
-    - _Skin_Blend_Value: 0.252
+    - _Skin_Blend_Value: 0.628
     - _Skin_HSV_Hue: 0.647
     - _Skin_HSV_Saturation: 0.856
     - _Skin_HSV_Value: 0.538
