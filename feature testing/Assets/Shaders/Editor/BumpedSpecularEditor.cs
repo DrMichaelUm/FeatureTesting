@@ -12,7 +12,6 @@ public class BumpedSpecularEditor : ShaderGUI
 
         public BumpSpecularGroupStates(List<(string toggleKeyword, string groupKeyword)> keywords)
         {
-            Debug.Log("Group States Construct");
             states = new Dictionary<string, ShaderGroupState>();
 
             foreach (var keyword in keywords)
@@ -85,7 +84,7 @@ public class BumpedSpecularEditor : ShaderGUI
     const string k_HideForCharacter = "_HideForCharacter";
 
     const string k_BaseColorOnKeyword = "_BASE_COLOR_ON";
-    const string k_BaseHsvOnKeyword = "_HSV_ON";
+    const string k_BaseHsvOnKeyword = "_BASE_HSV_ON";
     const string k_BaseColorKeyword = "_Color";
     
     const string k_SkinTogglePropertyName = "_ToggleSkin";
@@ -112,9 +111,9 @@ public class BumpedSpecularEditor : ShaderGUI
     private static readonly List<(string toggleKeyword, string groupKeyword)> _shaderGroupKeywords = 
         new List<(string toggleKeyword, string groupKeyword)>() 
         {   
-            (k_BaseColorOnKeyword, k_BaseHSVGroupKeyword), 
+            (k_BaseHsvOnKeyword, k_BaseHSVGroupKeyword), 
             (k_SkinOnKeyword, k_SkinGroupKeyword), 
-            (k_SkinColorOnKeyword, k_SkinHSVGroupKeyword), 
+            (k_SkinHsvOnKeyword, k_SkinHSVGroupKeyword), 
             (k_SkinBlendOnKeyword, k_SkinBlendGroupKeyword), 
             (k_NormalOnKeyword, k_NormalGroupKeyword),
             (k_SpecularOnKeyword, k_SpecularGroupKeyword),
@@ -180,124 +179,146 @@ public class BumpedSpecularEditor : ShaderGUI
             material.DisableKeyword(k_SkinBlendOnKeyword);
         }
         
-        //Begin help box for Base Color|HSV
+        //Begin help box for Base Properties
         GUILayout.BeginVertical("HelpBox");
         
         for (var i = 0; i != properties.Length; ++i)
         {
-            //Base Color|HSV toolbar and switch handle
-            if (properties[i].name == k_BaseColorKeyword)
-            {
-                m_SelectedBaseType = GUILayout.Toolbar(material.GetInt(s_BaseType), 
-                                                       Enum.GetNames(typeof(BaseType)));
-                material.SetInt(s_BaseType, m_SelectedBaseType);
-                
-                if (m_SelectedBaseType == (int)BaseType.Colorization)
-                {
-                    material.EnableKeyword(k_BaseColorOnKeyword);
-                    material.DisableKeyword(k_BaseHsvOnKeyword);
-                }
-                else
-                {
-                    material.EnableKeyword(k_BaseHsvOnKeyword);
-                    material.DisableKeyword(k_BaseColorOnKeyword);
-                }
-            }
-            
-            if (properties[i].name == k_SkinTogglePropertyName)
-                GUILayout.EndVertical();
+            BasePropertiesHelpBox(properties[i], material);
 
-            if (properties[i].name == k_SkinTogglePropertyName)
-            {
-                EditorGUILayout.Space();
-                EditorGUILayout.Space();
-                
-                if (skinOn)
-                    GUILayout.BeginVertical("HelpBox");
-            }
+            SkinPropertiesHelpBox(properties[i], material, skinOn);
 
-            //Skin Color|HSV toolbar and switch handle
-            if (skinOn && properties[i].name == k_SkinColorPropertyName)
-            {
-                m_SelectedSkinType = GUILayout.Toolbar(material.GetInt(s_SkinType), 
-                                                       Enum.GetNames(typeof(SkinType)));
-                material.SetInt(s_SkinType, m_SelectedSkinType);
-            
-                if (skinOn)
-                {
-                    if (m_SelectedSkinType == (int)SkinType.Colorization)
-                    {
-                        material.EnableKeyword(k_SkinColorOnKeyword);
-                        material.DisableKeyword(k_SkinHsvOnKeyword);
-                    }
-                    else
-                    {
-                        material.EnableKeyword(k_SkinHsvOnKeyword);
-                        material.DisableKeyword(k_SkinColorOnKeyword);
-                    }
-                }
-            }
-            
-            if (skinOn && properties[i].name == k_NormalTogglePropertyName)
-            {
-                GUILayout.EndVertical();
-            }
-            if (isGeneral && properties[i].name == k_NormalTogglePropertyName)
-            {
-                EditorGUILayout.Space();
-                EditorGUILayout.Space();
-                
-                GUILayout.BeginVertical("HelpBox");
-            }
+            AdvancedPropertiesHelpBox(properties[i], isGeneral);
 
-            if (isGeneral && properties[i].name == k_AmbientFactorPropertyName)
-            {
-                GUILayout.EndVertical();
-            }
-
-            if (properties[i].name == k_AmbientFactorPropertyName)
-            {
-                EditorGUILayout.Space();
-                EditorGUILayout.Space();
-
-                GUILayout.BeginVertical("HelpBox");
-
-                m_SelectedLightType = GUILayout.Toolbar(material.GetInt(s_LightType),
-                                                        Enum.GetNames(typeof(LightType)));
-                material.SetInt(s_LightType, m_SelectedLightType);
-
-                if (m_SelectedLightType == (int) LightType.Ambient)
-                {
-                    material.EnableKeyword(k_AmbientOnKeyword);
-                    _shaderGroupStates.states[k_AmbientOnKeyword].isActive = material.IsKeywordEnabled(k_AmbientOnKeyword);  //Bug fix for Editor event calls
-                }
-
-                if (m_SelectedLightType != (int) LightType.Ambient)
-                    material.DisableKeyword(k_AmbientOnKeyword);
-            }
+            LightPropertiesHelpBox(properties[i], material);
         
 
             if (!properties[i].name.Contains(k_HideForCharacter) || isGeneral)
             {
-                if (CanDraw(properties[i], _shaderGroupStates))
+                if (CanDraw(properties[i]))
                     properties[i].DisplayProperty(materialEditor);
             }
         }
         
         GUILayout.EndVertical();
     }
-    
-    //TODO Implement some kind of ShowIf attribute and remove this method
-    bool CanDraw (MaterialProperty property, BumpSpecularGroupStates bumpSpecularGroupStates)
-    {
-       
-        if (bumpSpecularGroupStates.states[k_BaseColorOnKeyword].isActive && property.name.Contains(k_BaseHSVGroupKeyword))
-            return false;
 
-        if (bumpSpecularGroupStates.states[k_SkinColorOnKeyword].isActive &&
-            property.name.Contains(k_SkinHSVGroupKeyword))
-            return false;
-        
+    private void BasePropertiesHelpBox (MaterialProperty property, Material material)
+    {
+        BaseColorizationToolbar(property, material); //Base Color|HSV switch handle
+
+        if (property.name == k_SkinTogglePropertyName)
+            GUILayout.EndVertical();
+    }
+
+    private void BaseColorizationToolbar(MaterialProperty property, Material material)
+    {
+        if (property.name == k_BaseColorKeyword)
+        {
+            m_SelectedBaseType = GUILayout.Toolbar(material.GetInt(s_BaseType),
+                                                   Enum.GetNames(typeof(BaseType)));
+            material.SetInt(s_BaseType, m_SelectedBaseType);
+
+            if (m_SelectedBaseType == (int) BaseType.Colorization)
+            {
+                material.EnableKeyword(k_BaseColorOnKeyword);
+                material.DisableKeyword(k_BaseHsvOnKeyword);
+            }
+            else
+            {
+                material.EnableKeyword(k_BaseHsvOnKeyword);
+                material.DisableKeyword(k_BaseColorOnKeyword);
+            }
+        }
+    }
+    
+    private void SkinPropertiesHelpBox (MaterialProperty property, Material material, bool skinOn)
+    {
+        if (property.name == k_SkinTogglePropertyName)
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            if (skinOn)
+                GUILayout.BeginVertical("HelpBox");
+        }
+
+        SkinColorizationToolbar(property, material, skinOn); //Skin Color|HSV switch handle
+
+        if (skinOn && property.name == k_NormalTogglePropertyName)
+        {
+            GUILayout.EndVertical();
+        }
+    }
+
+    private void SkinColorizationToolbar (MaterialProperty property, Material material, bool skinOn)
+    {
+        if (skinOn && property.name == k_SkinColorPropertyName)
+        {
+            m_SelectedSkinType = GUILayout.Toolbar(material.GetInt(s_SkinType),
+                                                   Enum.GetNames(typeof(SkinType)));
+            material.SetInt(s_SkinType, m_SelectedSkinType);
+
+            if (m_SelectedSkinType == (int) SkinType.Colorization)
+            {
+                material.EnableKeyword(k_SkinColorOnKeyword);
+                material.DisableKeyword(k_SkinHsvOnKeyword);
+            }
+            else
+            {
+                material.EnableKeyword(k_SkinHsvOnKeyword);
+                material.DisableKeyword(k_SkinColorOnKeyword);
+            }
+        }
+    }
+
+    private void AdvancedPropertiesHelpBox (MaterialProperty property, bool isGeneral)
+    {
+        if (isGeneral && property.name == k_NormalTogglePropertyName)
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            GUILayout.BeginVertical("HelpBox");
+        }
+
+        if (isGeneral && property.name == k_AmbientFactorPropertyName)
+        {
+            GUILayout.EndVertical();
+        }
+    }
+
+    private void LightPropertiesHelpBox (MaterialProperty property, Material material)
+    {
+        if (property.name == k_AmbientFactorPropertyName)
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            GUILayout.BeginVertical("HelpBox");
+
+            m_SelectedLightType = GUILayout.Toolbar(material.GetInt(s_LightType),
+                                                    Enum.GetNames(typeof(LightType)));
+            material.SetInt(s_LightType, m_SelectedLightType);
+
+            if (m_SelectedLightType == (int) LightType.Ambient)
+            {
+                material.EnableKeyword(k_AmbientOnKeyword);
+
+                _shaderGroupStates.states[k_AmbientOnKeyword].isActive =
+                    material.IsKeywordEnabled(k_AmbientOnKeyword); //Bug fix for Editor event calls
+            }
+
+            if (m_SelectedLightType != (int) LightType.Ambient)
+                material.DisableKeyword(k_AmbientOnKeyword);
+        }
+    }
+
+    
+
+    //TODO Implement some kind of ShowIf attribute and remove this method
+    bool CanDraw (MaterialProperty property)
+    {
         foreach (var shaderGroupState in _shaderGroupStates.states)
         {
             if (!shaderGroupState.Value.isActive && property.name.Contains(shaderGroupState.Value.groupKeyword))

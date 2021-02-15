@@ -17,9 +17,9 @@
         _MainTex ("Texture", 2D) = "white" {}
         [ShowIf(_BASE_COLOR_ON)] _Color ("Base Color (RGB)", Color) = (0, 0, 0, 0)
         
-        [ShowIf(_HSV_ON)] _Base_HSV_Hue ("Hue", Range(0, 1)) = 0
-        [ShowIf(_HSV_ON)] _Base_HSV_Saturation ("Saturation", Range(0,1)) = 0
-        [ShowIf(_HSV_ON)] _Base_HSV_Value ("Value", Range(0, 1)) = 0
+        [ShowIf(_BASE_HSV_ON)] _Base_HSV_Hue ("Hue", Range(0, 1)) = 0
+        [ShowIf(_BASE_HSV_ON)] _Base_HSV_Saturation ("Saturation", Range(0,1)) = 0
+        [ShowIf(_BASE_HSV_ON)] _Base_HSV_Value ("Value", Range(0, 1)) = 0
         
         [Toggle(_SKIN_ON)] _ToggleSkin ("Skin", int) = 0
         [ShowIf(_SKIN_ON)] _Skin_Tex ("Skin (RGB) Mask (A)", 2D) = "white" {}
@@ -100,7 +100,7 @@
             #pragma fragment frag
             
             #pragma shader_feature_local _ _BASE_COLOR_ON
-            #pragma shader_feature_local _ _HSV_ON
+            #pragma shader_feature_local _ _BASE_HSV_ON
             #pragma shader_feature_local _ _SKIN_ON
             #pragma shader_feature_local _ _SKIN_COLOR_ON
             #pragma shader_feature_local _ _SKIN_HSV_ON
@@ -141,7 +141,7 @@
             
             sampler2D _MainTex;
                 
-            #if _HSV_ON
+            #if _BASE_HSV_ON
                 float _Base_HSV_Hue;
                 float _Base_HSV_Saturation;
                 float _Base_HSV_Value;
@@ -244,7 +244,7 @@
                 float3 intensityRGB =  float3( lerp( intensity, baseMap.rgb, _Saturation ) );
                 baseMap = half4( intensityRGB * _Brightness, baseMap.a );
                 
-                #if _HSV_ON
+                #if _BASE_HSV_ON
                     baseColor = HSV_To_RGB(_Base_HSV_Hue, _Base_HSV_Saturation, _Base_HSV_Value);
                 #elif _BASE_COLOR_ON
                     baseColor = _Color.rgb;
