@@ -22,7 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Robot_Color
   m_Shader: {fileID: 4800000, guid: 4018fae2724815c4a9c61cf354b18549, type: 3}
-  m_ShaderKeywords: _AMBIENT_ON _ATTENUATION_ON _BASE_COLOR_ON _ENVIRONMENTREFLECTIONS_OFF
+  m_ShaderKeywords: _AMBIENT_ON _ATTENUATION_ON _BASE_HSV_ON _ENVIRONMENTREFLECTIONS_OFF
     _NORMAL_MAP_ON _RECEIVE_SHADOWS_OFF _SKIN_BLEND_ON _SKIN_COLOR_ON _SKIN_ON _SPECULAR_ON
     _SPECULAR_SETUP
   m_LightmapFlags: 4
@@ -128,7 +128,7 @@ Material:
     - _BaseHue: 0.153
     - _BaseMapOn: 0
     - _BaseSaturation: 0.796
-    - _BaseType: 0
+    - _BaseType: 1
     - _BaseValue: 0.527
     - _Base_HSV_Hue: 0.155
     - _Base_HSV_Saturation: 0.88

@@ -328,6 +328,6 @@
         }
     }
     
-    FallBack "Universl Render Pipeline/Lit"
+    FallBack "Universal Render Pipeline/Lit"
     CustomEditor "BumpedSpecularEditor" 
 }
