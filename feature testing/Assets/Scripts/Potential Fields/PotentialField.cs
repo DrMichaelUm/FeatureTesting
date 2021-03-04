@@ -2,15 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using UnityEngine;
 
 public class PotentialField : MonoBehaviour
 {
-    public float radius = 5f;
+    public float unitRadius = 5f;
+    public float areaHeight = 15f;
+    public float areaWidth = 15f;
+    
     [Range(0.1f, 5f)] public float resolution = .5f;
-
+    public bool runtimeBaking = false;
+    public float bakingFrequency = 1f;
     private const float KR = 100f;
-    private const float AREA_WIDTH = 50f;
+    private const float AREA_WIDTH = 15f;
 
     public List<Collider> obstacles;
 
@@ -24,15 +29,20 @@ public class PotentialField : MonoBehaviour
     private int m_areaWidth = 0;
     private int m_areaHeight = 0;
 
+    private Vector3[] obsCellsPos;
     private float speed = 5f;
+
+
+    private float timer = 0;
+    
     void Start()
     {
-        Vector3[] obsCellsPos;
         obsCellsPos = GetObstacleCellsPos(obstacles);
 
-        (m_leftAreaBound, m_bottomAreaBound, m_areaWidth, m_areaHeight) = CalculateAreaParams(obsCellsPos, resolution);
+        //(m_leftAreaBound, m_bottomAreaBound, m_areaWidth, m_areaHeight) = CalculateAreaParams(obsCellsPos, resolution);
+        (m_leftAreaBound, m_bottomAreaBound, m_areaWidth, m_areaHeight) = CalculateAreaParamsFromInitPos(transform.position, resolution);
         
-        m_potentialMap = CalculatePotentialField(obsCellsPos, m_areaWidth, m_areaHeight, m_leftAreaBound, m_bottomAreaBound, resolution, radius);
+        m_potentialMap = CalculatePotentialField(obsCellsPos, m_areaWidth, m_areaHeight, m_leftAreaBound, m_bottomAreaBound, resolution, unitRadius);
     }
 
     Vector3[] GetObstacleCellsPos(List<Collider> obstacles)
@@ -40,20 +50,17 @@ public class PotentialField : MonoBehaviour
         List<Vector3> obsPos = new List<Vector3>();
         foreach (var obstacle in obstacles)
         {
-            float minX = obstacle.bounds.min.x;
-            float minY = obstacle.bounds.min.y;
-            float maxX = obstacle.bounds.max.x;
-            float maxY = obstacle.bounds.max.y;
+            var bounds = obstacle.bounds;
 
-            for (int i = 0; i <= maxX - minX; i++)
+            for (int i = 0; i <= bounds.max.x - bounds.min.x; i++)
             {
-                float x = minX + i;
+                float x = bounds.min.x + i;
                 //Debug.Log("-----X: " + x + "-----------");
-                for (int j = 0; j <= maxY - minY; j++)
+                for (int j = 0; j <= bounds.max.y - bounds.min.y; j++)
                 {
-                    float y = minY + j;
+                    float y = bounds.min.y + j;
 
-                    if (x == minX || x == maxX || y == minY || y == maxY)
+                    if (x == bounds.min.x || x == bounds.max.x || y == bounds.min.y || y == bounds.max.y)
                     {
                         //Debug.Log("x " + x + "; y " + y);
                         obsPos.Add(new Vector3(x, y, 0));
@@ -73,7 +80,21 @@ public class PotentialField : MonoBehaviour
         float leftAreaBound = leftBottomObstacle.x - AREA_WIDTH / 2f;
         float bottomAreaBound = leftBottomObstacle.y - AREA_WIDTH / 2f;
         int areaWidth = (int) Mathf.Round((rightTopObstacle.x - leftBottomObstacle.x + AREA_WIDTH) / res);
-        int areaHeight = (int) Mathf.Round((rightTopObstacle.x - leftBottomObstacle.y + AREA_WIDTH) / res);
+        int areaHeight = (int) Mathf.Round((rightTopObstacle.y - leftBottomObstacle.y + AREA_WIDTH) / res);
+        
+        //print("lbo " + leftBottomObstacle + "; rto " + rightTopObstacle + "; aw" + areaWidth + "; ah " + areaHeight + "; lb " + leftAreaBound + "; bb " + bottomAreaBound);
+
+        return (leftAreaBound, bottomAreaBound, areaWidth, areaHeight);
+    }
+
+    (float minX, float minY, int width, int height) CalculateAreaParamsFromInitPos (Vector3 initPos, float res)
+    {
+        float leftAreaBound = initPos.x - this.areaWidth/ 2f;
+        float bottomAreaBound = initPos.y - this.areaHeight / 2f;
+        int areaWidth = (int) Mathf.Round(this.areaWidth / res);
+        int areaHeight = (int) Mathf.Round(this.areaHeight / res);
+        
+        //print("aw " + areaWidth + "; ah " + areaHeight + "; lb " + leftAreaBound + "; bb " + bottomAreaBound);
 
         return (leftAreaBound, bottomAreaBound, areaWidth, areaHeight);
     }
@@ -81,6 +102,17 @@ public class PotentialField : MonoBehaviour
     void Update()
     {
         SimpleMovement();
+
+        if (runtimeBaking)
+        {
+            timer += Time.deltaTime;
+
+            if (timer >= bakingFrequency)
+            {
+                CalculatePotentialMap();
+                timer = 0f;
+            }
+        }
 
         (m_potentialDir, m_potentialValue) = 
             CalculateOptimalPotentialVector(transform.position, m_potentialMap, m_leftAreaBound, m_bottomAreaBound, resolution);
@@ -108,15 +140,41 @@ public class PotentialField : MonoBehaviour
                     Gizmos.color = new Color(m_potentialMap[i,j]* 0.1f, m_potentialMap[i,j]* 0.1f, m_potentialMap[i,j]* 0.1f);
                     Gizmos.DrawSphere(new Vector3(i * resolution + m_leftAreaBound, j * resolution + m_bottomAreaBound, -5), .1f);
                 }
+                else
+                {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawSphere(new Vector3(i * resolution + m_leftAreaBound, j * resolution + m_bottomAreaBound, -5), .1f);
+                }
             }
         }
         Gizmos.color = Color.white;
     }
-    
-    (Vector3 potentialDirection, float potentialValue) CalculateOptimalPotentialVector (Vector3 startPos, float[,] potentialMap, float minX, float minY, float res)
+
+    private void CalculatePotentialMap()
     {
-        startPos.x = Mathf.Round((startPos.x - minX) / res);
-        startPos.y = Mathf.Round((startPos.y - minY) / res);
+        obsCellsPos = GetObstacleCellsPos(obstacles);
+
+        (m_leftAreaBound, m_bottomAreaBound, m_areaWidth, m_areaHeight) =
+            CalculateAreaParamsFromInitPos(transform.position, resolution);
+
+        m_potentialMap = CalculatePotentialField(obsCellsPos, m_areaWidth, m_areaHeight, m_leftAreaBound,
+                                                 m_bottomAreaBound, resolution, unitRadius);
+    }
+    (Vector3 potentialDirection, float potentialValue) CalculateOptimalPotentialVector 
+        (
+            Vector3 currentPos, 
+            float[,] potentialMap, 
+            float minX, 
+            float minY, 
+            float res
+        )
+    {
+        Debug.Log("LX " + potentialMap.GetLength(0) + "; LY " + potentialMap.GetLength(1) + 
+                  "; PosX " + currentPos.x + "; PosY " + currentPos.y +
+                  "; MinX " + minX + "; MinY " + minY);
+
+        currentPos.x = Mathf.Round((currentPos.x - minX) / res);
+        currentPos.y = Mathf.Round((currentPos.y - minY) / res);
         
         float[,] motionMap = GetMotionMap();
         
@@ -125,8 +183,8 @@ public class PotentialField : MonoBehaviour
 
         for (int i = 0; i < motionMap.GetLength(0); i++)
         {
-            int movedX = (int)(startPos.x + motionMap[i,0]);
-            int movedY = (int)(startPos.y + motionMap[i,1]);
+            int movedX = (int)(currentPos.x + motionMap[i,0]);
+            int movedY = (int)(currentPos.y + motionMap[i,1]);
             float currentPotential = float.MaxValue;
             
             if (movedX < potentialMap.GetLength(0) && movedY < potentialMap.GetLength(1))
@@ -140,21 +198,37 @@ public class PotentialField : MonoBehaviour
             }
         }
 
+        if (minMovedX == -1 || minMovedY == -1)
+        {
+            currentPos.x = currentPos.x * res + minX;
+            currentPos.y = currentPos.y * res + minY;
+            return (currentPos, 0);
+        }
+            
+            
         return (new Vector3(minMovedX * res + minX, minMovedY * res + minY, 0), minPotential);
     }
     
-    float[,] CalculatePotentialField (Vector3[] obsPos, int areaWidth, int areaHeight, float minx, float miny, float res,
-                                      float unitRadius)
+    float[,] CalculatePotentialField 
+        (
+            Vector3[] obsPos, 
+            int areaWidth, 
+            int areaHeight, 
+            float minX, 
+            float minY, 
+            float res,
+            float unitRadius
+        )
     {
         float[,] potentialMap = new float[areaWidth, areaHeight];
         
         for (int i = 0; i < areaWidth; i++)
         {
-            float x = i * res + minx;
+            float x = i * res + minX;
 
             for (int j = 0; j < areaHeight; j++)
             {
-                float y = j * res + miny;
+                float y = j * res + minY;
 
                 float uAttractionPotential = 0;
                 float uRepulsionPotential = CalculateRepulsivePotential (x, y, obsPos, unitRadius);
