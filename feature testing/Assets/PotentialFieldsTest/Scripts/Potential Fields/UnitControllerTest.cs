@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitController : MonoBehaviour
+public class UnitControllerTest : MonoBehaviour
 {
     public bool IsKing => this.name.Contains("King");
     private float speed = 5f;
 
     private Vector3 m_targetDirection = Vector3.zero;
     
-    public Vector3 CorrectionDirection { get; set; } = Vector3.zero;
+    public Vector3 DirectionToMinPotential { get; set; } = Vector3.zero;
     public float PotentialValue { get; set; } = 0f;
     public float MaxPotentialValue { get; set; } = 1f;
     // Start is called before the first frame update
@@ -30,7 +30,7 @@ public class UnitController : MonoBehaviour
 
         //m_targetDirection += inputDirection;
         //AddToTargetDirection(CorrectionDirection);
-        LerpToTargetDirection(CorrectionDirection, PotentialValue, MaxPotentialValue);
+        LerpToTargetDirection(DirectionToMinPotential, PotentialValue, MaxPotentialValue);
         if (m_targetDirection.magnitude > 1)
             m_targetDirection.Normalize();
         
